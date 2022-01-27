@@ -56,5 +56,14 @@ for test_type in ["json", "plaintext"]:
             "requests_processed_starlette",
         ]
     ].set_index("url")
+    final_df["requests_processed_starlite"] = (
+        final_df["requests_processed_starlite"] / final_df["requests_processed_starlette"]
+    )
+    final_df["requests_processed_fastapi"] = (
+        final_df["requests_processed_fastapi"] / final_df["requests_processed_starlette"]
+    )
+    final_df["requests_processed_starlette"] = (
+        final_df["requests_processed_starlette"] / final_df["requests_processed_starlette"]
+    )
     ax = final_df.plot.bar(rot=0)
     plt.savefig(str(root_dir.absolute()) + f"/result-{test_type}.png")
