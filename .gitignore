@@ -9,6 +9,8 @@ __pycache__/
 dist/
 node_modules/
 results/
+starlite/starlite.egg-info/
+build/
 
 # files
 *.iml

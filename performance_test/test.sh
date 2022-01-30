@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TEST_ITERATIONS=${1:4}
+TEST_ITERATIONS=3
 
 set -e
 [ -d "./node_modules" ] && npm install
@@ -10,6 +10,7 @@ mkdir -p results
 [ ! -d "./.venv" ] && python -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip && pip install -r requirements.txt
+pip install ../dist/starlite-1.0.0-cp310-cp310-manylinux_2_33_x86_64.whl --force-reinstall
 
 for TYPE in json plaintext; do
   for TARGET in starlite starlette fastapi; do
@@ -29,7 +30,7 @@ for TYPE in json plaintext; do
     for i in $(seq 1 "$TEST_ITERATIONS"); do
       for ENDPOINT in "${endpoints[@]}"; do
         name=$(echo "${TYPE}-${TARGET}-${ENDPOINT}-${i}.json" | sed 's/^\///;s/\//-/g')
-        npx autocannon -d 5 -c 50 -w 4 -j "http://0.0.0.0:8001/$ENDPOINT" >>"./results/$name"
+        npx -y autocannon -d 5 -c 50 -w 4 -j "http://0.0.0.0:8001/$ENDPOINT" >>"./results/$name"
       done
     done
     printf "\n\ntest sequence finished\n\nterminating all running python instances\n\n"
