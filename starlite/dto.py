@@ -9,6 +9,7 @@ from typing_extensions import ClassVar, Type
 from starlite.exceptions import ImproperlyConfiguredException
 from starlite.plugins import PluginProtocol, get_plugin_for_value
 from starlite.utils import convert_dataclass_to_model
+from starlite.utils.model import ArbitraryTypesAllowedModelConfig
 
 
 def get_field_type(model_field: ModelField) -> Any:
@@ -27,9 +28,7 @@ T = TypeVar("T")
 
 
 class DTO(GenericModel, Generic[T]):
-    class Config(BaseConfig):
-        arbitrary_types_allowed = True
-
+    __config__ = ArbitraryTypesAllowedModelConfig
     dto_source_model: ClassVar[Type[T]]  # type: ignore
     dto_field_mapping: ClassVar[Dict[str, str]]
     dto_source_plugin: ClassVar[Optional[PluginProtocol[T]]] = None  # type: ignore

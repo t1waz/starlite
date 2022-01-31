@@ -14,7 +14,6 @@ from typing import (
     cast,
 )
 
-from pydantic import validate_arguments
 from pydantic.typing import AnyCallable
 from starlette.background import BackgroundTask, BackgroundTasks
 from starlette.responses import FileResponse, RedirectResponse
@@ -39,7 +38,7 @@ from starlite.types import (
     BeforeRequestHandler,
     Guard,
     Method,
-    ResponseHeader,
+    ResponseHeader, empty,
 )
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -75,7 +74,6 @@ class HTTPRouteHandler(BaseRouteHandler):
         "template_name",
     )
 
-    @validate_arguments(config={"arbitrary_types_allowed": True})
     def __init__(
         self,
         path: Union[Optional[str], Optional[List[str]]] = None,
@@ -138,15 +136,15 @@ class HTTPRouteHandler(BaseRouteHandler):
         self.response_description = response_description
         self.summary = summary
         self.tags = tags
-        # memoized attributes, defaulted to BaseRouteHandler.empty
-        self.resolved_headers: Union[Dict[str, ResponseHeader], Type[BaseRouteHandler.empty]] = BaseRouteHandler.empty
-        self.resolved_response_class: Union[Type[Response], Type[BaseRouteHandler.empty]] = BaseRouteHandler.empty
+        # memoized attributes, defaulted to empty
+        self.resolved_headers: Union[Dict[str, ResponseHeader], Type[empty]] = empty
+        self.resolved_response_class: Union[Type[Response], Type[empty]] = empty
         self.resolved_after_request: Union[
-            Optional[BeforeRequestHandler], Type[BaseRouteHandler.empty]
-        ] = BaseRouteHandler.empty
+            Optional[BeforeRequestHandler], Type[empty]
+        ] = empty
         self.resolved_before_request: Union[
-            Optional[BeforeRequestHandler], Type[BaseRouteHandler.empty]
-        ] = BaseRouteHandler.empty
+            Optional[BeforeRequestHandler], Type[empty]
+        ] = empty
 
     def __call__(self, fn: AnyCallable) -> "HTTPRouteHandler":
         """
@@ -168,7 +166,7 @@ class HTTPRouteHandler(BaseRouteHandler):
 
     def resolve_response_class(self) -> Type[Response]:
         """Return the closest custom Response class in the owner graph or the default Response class"""
-        if self.resolved_response_class is BaseRouteHandler.empty:
+        if self.resolved_response_class is empty:
             self.resolved_response_class = Response
             for layer in self.ownership_layers():
                 if layer.response_class is not None:
@@ -180,7 +178,7 @@ class HTTPRouteHandler(BaseRouteHandler):
         """
         Returns all header parameters in the scope of the handler function
         """
-        if self.resolved_headers is BaseRouteHandler.empty:
+        if self.resolved_headers is empty:
             headers: Dict[str, ResponseHeader] = {}
             for layer in self.ownership_layers():
                 for key, value in (layer.response_headers or {}).items():
@@ -196,12 +194,12 @@ class HTTPRouteHandler(BaseRouteHandler):
         If a handler is found it is returned, otherwise None is set.
         This mehtod is memoized so the computation occurs only once
         """
-        if self.resolved_before_request is BaseRouteHandler.empty:
+        if self.resolved_before_request is empty:
             for layer in self.ownership_layers():
                 if layer.before_request:
                     self.resolved_before_request = layer.before_request
                     break
-            if self.resolved_before_request is BaseRouteHandler.empty:
+            if self.resolved_before_request is empty:
                 self.resolved_before_request = None
             elif ismethod(self.resolved_before_request):
                 # python automatically binds class variables, which we do not want in this case.
@@ -215,12 +213,12 @@ class HTTPRouteHandler(BaseRouteHandler):
         If a handler is found it is returned, otherwise None is set.
         This mehtod is memoized so the computation occurs only once
         """
-        if self.resolved_after_request is BaseRouteHandler.empty:
+        if self.resolved_after_request is empty:
             for layer in self.ownership_layers():
                 if layer.after_request:
                     self.resolved_after_request = layer.after_request  # type: ignore
                     break
-            if self.resolved_after_request is BaseRouteHandler.empty:
+            if self.resolved_after_request is empty:
                 self.resolved_after_request = None
             elif ismethod(self.resolved_after_request):
                 # python automatically binds class variables, which we do not want in this case.
@@ -318,7 +316,6 @@ route = HTTPRouteHandler
 
 
 class get(HTTPRouteHandler):
-    @validate_arguments(config={"arbitrary_types_allowed": True})
     def __init__(
         self,
         path: Union[Optional[str], Optional[List[str]]] = None,
@@ -368,7 +365,6 @@ class get(HTTPRouteHandler):
 
 
 class post(HTTPRouteHandler):
-    @validate_arguments(config={"arbitrary_types_allowed": True})
     def __init__(
         self,
         path: Union[Optional[str], Optional[List[str]]] = None,
@@ -418,7 +414,6 @@ class post(HTTPRouteHandler):
 
 
 class put(HTTPRouteHandler):
-    @validate_arguments(config={"arbitrary_types_allowed": True})
     def __init__(
         self,
         path: Union[Optional[str], Optional[List[str]]] = None,
@@ -468,7 +463,6 @@ class put(HTTPRouteHandler):
 
 
 class patch(HTTPRouteHandler):
-    @validate_arguments(config={"arbitrary_types_allowed": True})
     def __init__(
         self,
         path: Union[Optional[str], Optional[List[str]]] = None,
@@ -518,7 +512,6 @@ class patch(HTTPRouteHandler):
 
 
 class delete(HTTPRouteHandler):
-    @validate_arguments(config={"arbitrary_types_allowed": True})
     def __init__(
         self,
         path: Union[Optional[str], Optional[List[str]]] = None,

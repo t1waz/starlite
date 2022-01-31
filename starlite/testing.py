@@ -1,10 +1,9 @@
-from typing import Any, Dict, List, Optional, Tuple, Union, cast
+from typing import Any, Dict, List, Optional, Union, cast
 from urllib.parse import urlencode
 
 from orjson import dumps
 from pydantic import BaseModel
 from pydantic.typing import AnyCallable
-from requests.models import RequestEncodingMixin
 from starlette.middleware import Middleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.testclient import TestClient as StarletteTestClient
@@ -28,18 +27,18 @@ from starlite.types import (
 )
 
 
-class RequestEncoder(RequestEncodingMixin):
-    def multipart_encode(self, data: Dict[str, Any]) -> Tuple[bytes, str]:
-        class ForceMultipartDict(dict):
-            # code borrowed from here:
-            # https://github.com/encode/starlette/blob/d222b87cb4601ecda5d642ab504a14974d364db4/tests/test_formparsers.py#L14
-            def __bool__(self) -> bool:
-                return True
-
-        return self._encode_files(ForceMultipartDict(), data)  # type: ignore
-
-    def url_encode(self, data: Dict[str, Any]) -> bytes:
-        return self._encode_params(data).encode("utf-8")  # type: ignore
+# class RequestEncoder(RequestEncodingMixin):
+#     def multipart_encode(self, data: Dict[str, Any]) -> Tuple[bytes, str]:
+#         class ForceMultipartDict(dict):
+#             # code borrowed from here:
+#             # https://github.com/encode/starlette/blob/d222b87cb4601ecda5d642ab504a14974d364db4/tests/test_formparsers.py#L14
+#             def __bool__(self) -> bool:
+#                 return True
+#
+#         return self._encode_files(ForceMultipartDict(), data)  # type: ignore
+#
+#     def url_encode(self, data: Dict[str, Any]) -> bytes:
+#         return self._encode_params(data).encode("utf-8")  # type: ignore
 
 
 class TestClient(StarletteTestClient):
@@ -132,10 +131,6 @@ def create_test_request(
 ) -> Request:
     """Create a starlette request using passed in parameters"""
 
-    class App:
-        state = State()
-        plugins: List[Any] = []
-
     scope = dict(
         type="http",
         method=http_method,
@@ -144,7 +139,7 @@ def create_test_request(
         root_path=root_path,
         path=path,
         headers=[],
-        app=app or App(),
+        app=app or Starlite(route_handlers=[]),
     )
     if not headers:
         headers = {}
@@ -159,12 +154,12 @@ def create_test_request(
         if request_media_type == RequestEncodingType.JSON:
             body = dumps(content)
             headers["Content-Type"] = RequestEncodingType.JSON.value
-        elif request_media_type == RequestEncodingType.MULTI_PART:
-            body, content_type = RequestEncoder().multipart_encode(content)
-            headers["Content-Type"] = content_type
-        else:
-            body = RequestEncoder().url_encode(content)
-            headers["Content-Type"] = RequestEncodingType.URL_ENCODED.value
+        # elif request_media_type == RequestEncodingType.MULTI_PART:
+        #     body, content_type = RequestEncoder().multipart_encode(content)
+        #     headers["Content-Type"] = content_type
+        # else:
+        #     body = RequestEncoder().url_encode(content)
+        #     headers["Content-Type"] = RequestEncodingType.URL_ENCODED.value
     if headers:
         scope["headers"] = [
             (key.lower().encode("latin-1", errors="ignore"), value.encode("latin-1", errors="ignore"))

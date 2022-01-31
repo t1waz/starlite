@@ -5,6 +5,8 @@ from typing import Any, AsyncIterator, Dict, Iterator, Optional, Union, cast
 from pydantic import BaseModel, FilePath, validator
 from starlette.datastructures import State as StarletteStateClass
 
+from starlite.utils.model import ArbitraryTypesAllowedModelConfig
+
 
 class State(StarletteStateClass):
     def __copy__(self) -> "State":
@@ -20,8 +22,7 @@ class State(StarletteStateClass):
 
 
 class StarliteType(BaseModel):
-    class Config:
-        arbitrary_types_allowed = True
+    __config__ = ArbitraryTypesAllowedModelConfig
 
 
 class File(StarliteType):
@@ -42,9 +43,7 @@ class Redirect(StarliteType):
 
 
 class Stream(StarliteType):
-    class Config:
-        arbitrary_types_allowed = True
-
+    __config__ = ArbitraryTypesAllowedModelConfig
     iterator: Union[Iterator[Any], AsyncIterator[Any]]
 
 

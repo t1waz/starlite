@@ -1,7 +1,6 @@
 from http import HTTPStatus
 from typing import Any, Dict, Optional
 
-from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.status import (
     HTTP_400_BAD_REQUEST,
     HTTP_401_UNAUTHORIZED,
@@ -11,6 +10,7 @@ from starlette.status import (
     HTTP_500_INTERNAL_SERVER_ERROR,
     HTTP_503_SERVICE_UNAVAILABLE,
 )
+from typing_extensions import ClassVar
 
 
 class StarLiteException(Exception):
@@ -24,31 +24,29 @@ class StarLiteException(Exception):
         return self.__class__.__name__
 
 
-class MissingDependencyException(StarLiteException, ImportError):
+class MissingDependencyException(StarLiteException):
     pass
 
 
-class HTTPException(StarLiteException, StarletteHTTPException):
-    status_code = HTTP_500_INTERNAL_SERVER_ERROR
+class HTTPException(StarLiteException):
+    status_code: ClassVar[int] = HTTP_500_INTERNAL_SERVER_ERROR
     extra: Optional[Dict[str, Any]] = None
 
-    def __init__(  # pylint: disable=super-init-not-called
-        self, detail: Optional[str] = None, status_code: Optional[int] = None, extra: Optional[Dict[str, Any]] = None
+    def __init__(
+        self, detail: Optional[str] = None, extra: Optional[Dict[str, Any]] = None
     ):
-        if status_code:
-            self.status_code = status_code
-        self.detail = detail or HTTPStatus(self.status_code).phrase
         self.extra = extra
+        super().__init__(detail or HTTPStatus(self.status_code).phrase)
 
     def __repr__(self) -> str:
         return f"{self.status_code} - {self.__class__.__name__} - {self.detail}"
 
 
-class ImproperlyConfiguredException(HTTPException, ValueError):
+class ImproperlyConfiguredException(HTTPException):
     pass
 
 
-class ValidationException(HTTPException, ValueError):
+class ValidationException(HTTPException):
     status_code = HTTP_400_BAD_REQUEST
 
 
@@ -60,7 +58,7 @@ class PermissionDeniedException(HTTPException):
     status_code = HTTP_403_FORBIDDEN
 
 
-class NotFoundException(HTTPException, ValueError):
+class NotFoundException(HTTPException):
     status_code = HTTP_404_NOT_FOUND
 
 

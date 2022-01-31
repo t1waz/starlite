@@ -27,3 +27,7 @@ def convert_dataclass_to_model(dataclass: Any) -> Type[BaseModel]:
     if not _dataclass_model_map.get(dataclass):
         _dataclass_model_map[dataclass] = create_model_from_dataclass(dataclass)
     return _dataclass_model_map[dataclass]
+
+
+class ArbitraryTypesAllowedModelConfig(BaseConfig):
+    arbitrary_types_allowed = True

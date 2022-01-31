@@ -19,7 +19,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.requests import HTTPConnection
 from starlette.responses import Response as StarletteResponse
 from starlette.types import ASGIApp, Receive, Scope, Send
-from typing_extensions import Literal, Protocol, Type, runtime_checkable
+from typing_extensions import Literal, Protocol, Type, runtime_checkable, ClassVar
 
 from starlite.exceptions import HTTPException
 from starlite.response import Response
@@ -91,7 +91,7 @@ T = TypeVar("T", bound=Type[BaseModel])
 
 
 class Partial(Generic[T]):
-    _models: Dict[T, Any] = {}
+    _models: ClassVar[Dict[Any, Any]] = {}
 
     def __class_getitem__(cls, item: T) -> T:
         """
@@ -110,4 +110,8 @@ class Partial(Generic[T]):
 
 
 class ResponseHeader(Header):  # type: ignore
-    value: Any = ...
+    value: Any
+
+
+class empty:
+    """Placeholder"""

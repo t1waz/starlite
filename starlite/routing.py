@@ -4,7 +4,6 @@ from itertools import chain
 from typing import Any, Dict, ItemsView, List, Optional, Tuple, Union, cast
 from uuid import UUID
 
-from pydantic import validate_arguments
 from pydantic.typing import AnyCallable
 from starlette.requests import HTTPConnection
 from starlette.routing import get_name
@@ -51,7 +50,6 @@ class BaseRoute:
         "scope_type",
     )
 
-    @validate_arguments(config={"arbitrary_types_allowed": True})
     def __init__(
         self,
         *,
@@ -83,7 +81,7 @@ class BaseRoute:
                 raise ImproperlyConfiguredException(
                     "Path parameters should be declared with a type using the following pattern: '{parameter_name:type}', e.g. '/my-path/{my_param:int}'"
                 )
-            param_name, param_type = (p.strip() for p in param.split(":"))
+            param_name, param_type = param.split(":")
             path_format = path_format.replace(param, param_name)
             path_parameters.append({"name": param_name, "type": param_type_map[param_type], "full": param})
         return path, path_format, path_parameters
@@ -108,7 +106,6 @@ class HTTPRoute(BaseRoute):
         # see: https://stackoverflow.com/questions/472000/usage-of-slots
     )
 
-    @validate_arguments(config={"arbitrary_types_allowed": True})
     def __init__(
         self,
         *,
@@ -190,7 +187,6 @@ class WebSocketRoute(BaseRoute):
         # see: https://stackoverflow.com/questions/472000/usage-of-slots
     )
 
-    @validate_arguments(config={"arbitrary_types_allowed": True})
     def __init__(
         self,
         *,
@@ -236,7 +232,6 @@ class ASGIRoute(BaseRoute):
         # see: https://stackoverflow.com/questions/472000/usage-of-slots
     )
 
-    @validate_arguments(config={"arbitrary_types_allowed": True})
     def __init__(
         self,
         *,
@@ -278,7 +273,6 @@ class Router:
         "routes",
     )
 
-    @validate_arguments(config={"arbitrary_types_allowed": True})
     def __init__(
         self,
         *,

@@ -9,14 +9,13 @@ from starlite.enums import MediaType
 from starlite.exceptions import NotAuthorizedException, PermissionDeniedException
 from starlite.response import Response
 from starlite.types import MiddlewareProtocol
+from starlite.utils.model import ArbitraryTypesAllowedModelConfig
 
 
 class AuthenticationResult(BaseModel):
+    __config__ = ArbitraryTypesAllowedModelConfig
     user: Any
     auth: Any = None
-
-    class Config:
-        arbitrary_types_allowed = True
 
 
 class AbstractAuthenticationMiddleware(ABC, MiddlewareProtocol):

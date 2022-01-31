@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Optional, Set, Union, cast
 
 from openapi_schema_pydantic import OpenAPI, Schema
 from openapi_schema_pydantic.util import construct_open_api_with_schema_class
-from pydantic import Extra, validate_arguments
+from pydantic import Extra
 from pydantic.typing import AnyCallable
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware import Middleware
@@ -62,7 +62,6 @@ class Starlite(Router):
         # see: https://stackoverflow.com/questions/472000/usage-of-slots
     )
 
-    @validate_arguments(config={"arbitrary_types_allowed": True})
     def __init__(
         self,
         *,
@@ -141,7 +140,7 @@ class Starlite(Router):
         """
         Determine what exception handler to use given the current scope, and handle an appropriate response
         """
-        status_code = exc.status_code if isinstance(exc, StarletteHTTPException) else HTTP_500_INTERNAL_SERVER_ERROR
+        status_code = exc.status_code if isinstance(exc, (HTTPException, StarletteHTTPException)) else HTTP_500_INTERNAL_SERVER_ERROR
         if scope["type"] == "http":
             exception_handler = (
                 self.exception_handlers.get(status_code)
@@ -257,7 +256,7 @@ class Starlite(Router):
 
     def default_http_exception_handler(self, request: Request, exc: Exception) -> StarletteResponse:
         """Default handler for exceptions subclassed from HTTPException"""
-        status_code = exc.status_code if isinstance(exc, StarletteHTTPException) else HTTP_500_INTERNAL_SERVER_ERROR
+        status_code = exc.status_code if isinstance(exc, (HTTPException, StarletteHTTPException)) else HTTP_500_INTERNAL_SERVER_ERROR
         if status_code == HTTP_500_INTERNAL_SERVER_ERROR and self.debug:
             # in debug mode, we just use the serve_middleware to create an HTML formatted response for us
             server_middleware = ServerErrorMiddleware(app=self)

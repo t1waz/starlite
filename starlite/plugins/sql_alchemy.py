@@ -2,7 +2,7 @@ from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 from inspect import isclass
 from ipaddress import IPv4Network, IPv6Network
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union, cast
 from uuid import UUID
 
 from pydantic import BaseModel, Json, conint, constr, create_model
@@ -29,6 +29,7 @@ try:
     )
     from sqlalchemy.orm import DeclarativeMeta, Mapper
     from sqlalchemy.sql.type_api import TypeEngine
+    from sqlalchemy.sql.sqltypes import TupleType
 except ImportError as exc:  # pragma: no cover
     raise MissingDependencyException("sqlalchemy is not installed") from exc
 
@@ -75,7 +76,7 @@ class SQLAlchemyPlugin(PluginProtocol[DeclarativeMeta]):
             dimensions -= 1
         return list_type
 
-    def handle_tuple_type(self, column_type: sqlalchemy_type.TupleType) -> Any:
+    def handle_tuple_type(self, column_type: TupleType) -> Any:
         """
         Handles the SQLAlchemy Tuple type
         """
@@ -86,16 +87,17 @@ class SQLAlchemyPlugin(PluginProtocol[DeclarativeMeta]):
         """
         Handles the SQLAlchemy Enum types
         """
-        return column_type.enum_class
+        return cast(Any, column_type).enum_class
 
     @property
-    def providers_map(self) -> Dict[Type[TypeEngine], Callable[[Union[TypeEngine, Type[TypeEngine]]], Any]]:
+    def providers_map(self) -> Dict[Any, Callable[..., Any]]:
         """
         A map of SQLAlchemy column types to provider functions.
 
         This method is separated to allow for easy overriding in subclasses.
         """
         return {
+            TupleType: self.handle_tuple_type,
             sqlalchemy_type.ARRAY: self.handle_list_type,
             sqlalchemy_type.BIGINT: lambda x: int,
             sqlalchemy_type.BINARY: self.handle_string_type,
@@ -132,7 +134,7 @@ class SQLAlchemyPlugin(PluginProtocol[DeclarativeMeta]):
             sqlalchemy_type.TIMESTAMP: lambda x: datetime,
             sqlalchemy_type.Text: self.handle_string_type,
             sqlalchemy_type.Time: lambda x: time,
-            sqlalchemy_type.TupleType: self.handle_tuple_type,
+
             sqlalchemy_type.Unicode: self.handle_string_type,
             sqlalchemy_type.UnicodeText: self.handle_string_type,
             sqlalchemy_type.VARBINARY: self.handle_string_type,
@@ -252,7 +254,7 @@ class SQLAlchemyPlugin(PluginProtocol[DeclarativeMeta]):
                 raise ImproperlyConfiguredException("Unsupported Column type, please extend the provider table.") from e
         return type(column_type)
 
-    def parse_model(self, model_class: DeclarativeMeta) -> Mapper:
+    def parse_model(self, model_class: Type[DeclarativeMeta]) -> Mapper:
         """
         Validates that the passed in model_class is an SQLAlchemy declarative model, and returns a Mapper of it
         """
@@ -262,7 +264,7 @@ class SQLAlchemyPlugin(PluginProtocol[DeclarativeMeta]):
             )
         return inspect(model_class)
 
-    def to_pydantic_model_class(self, model_class: DeclarativeMeta, **kwargs: Any) -> Type[BaseModel]:
+    def to_pydantic_model_class(self, model_class: Type[DeclarativeMeta], **kwargs: Any) -> Type[BaseModel]:
         """
         Generates a pydantic model for a given SQLAlchemy declarative table and any nested relations.
         """

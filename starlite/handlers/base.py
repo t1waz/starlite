@@ -12,14 +12,13 @@ from typing import (
     cast,
 )
 
-from pydantic import validate_arguments
 from pydantic.typing import AnyCallable
 from starlette.requests import HTTPConnection
 
 from starlite.exceptions import ImproperlyConfiguredException
 from starlite.provide import Provide
 from starlite.signature import SignatureModel
-from starlite.types import Guard
+from starlite.types import Guard, empty
 from starlite.utils import normalize_path
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -28,8 +27,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class BaseRouteHandler:
-    class empty:
-        """Placeholder"""
+
 
     __slots__ = (
         "paths",
@@ -43,7 +41,6 @@ class BaseRouteHandler:
         "signature_model",
     )
 
-    @validate_arguments(config={"arbitrary_types_allowed": True})
     def __init__(
         self,
         path: Union[Optional[str], Optional[List[str]]] = None,
@@ -61,8 +58,8 @@ class BaseRouteHandler:
         self.opt: Dict[str, Any] = opt or {}
         self.fn: Optional[AnyCallable] = None
         self.owner: Optional[Union["Controller", "Router"]] = None
-        self.resolved_dependencies: Union[Dict[str, Provide], Type[BaseRouteHandler.empty]] = BaseRouteHandler.empty
-        self.resolved_guards: Union[List[Guard], Type[BaseRouteHandler.empty]] = BaseRouteHandler.empty
+        self.resolved_dependencies: Union[Dict[str, Provide], Type[empty]] = empty
+        self.resolved_guards: Union[List[Guard], Type[empty]] = empty
         self.signature_model: Optional[Type[SignatureModel]] = None
 
     def ownership_layers(self) -> Generator[Union["BaseRouteHandler", "Controller", "Router"], None, None]:
@@ -79,7 +76,7 @@ class BaseRouteHandler:
 
     def resolve_guards(self) -> List[Guard]:
         """Returns all guards in the handlers scope, starting from highest to current layer"""
-        if self.resolved_guards is BaseRouteHandler.empty:
+        if self.resolved_guards is empty:
             resolved_guards: List[Guard] = []
             for layer in self.ownership_layers():
                 if layer.guards:
@@ -94,7 +91,7 @@ class BaseRouteHandler:
         """
         if not self.signature_model:
             raise RuntimeError("resolve_dependencies cannot be called before a signature model has been generated")
-        if self.resolved_dependencies is BaseRouteHandler.empty:
+        if self.resolved_dependencies is empty:
             dependencies: Dict[str, Provide] = {}
             for layer in self.ownership_layers():
                 for key, value in (layer.dependencies or {}).items():

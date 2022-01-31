@@ -11,12 +11,11 @@ from typing_extensions import get_args
 from starlite.connection import Request, WebSocket
 from starlite.exceptions import ImproperlyConfiguredException, ValidationException
 from starlite.plugins.base import PluginMapping, PluginProtocol, get_plugin_for_value
+from starlite.utils.model import ArbitraryTypesAllowedModelConfig
 
 
 class SignatureModel(BaseModel):
-    class Config(BaseConfig):
-        arbitrary_types_allowed = True
-
+    __config__ = ArbitraryTypesAllowedModelConfig
     field_plugin_mappings: ClassVar[Dict[str, PluginMapping]]
     return_annotation: ClassVar[Any]
     has_kwargs: ClassVar[bool]

@@ -1,7 +1,6 @@
 from inspect import Signature, iscoroutinefunction
 from typing import Any, Dict, List, Optional, Union, cast
 
-from pydantic import validate_arguments
 from pydantic.typing import AnyCallable
 
 from starlite.exceptions import ImproperlyConfiguredException
@@ -10,7 +9,6 @@ from starlite.types import Guard
 
 
 class ASGIRouteHandler(BaseRouteHandler):
-    @validate_arguments(config={"arbitrary_types_allowed": True})
     def __init__(
         self,
         path: Union[Optional[str], Optional[List[str]]] = None,

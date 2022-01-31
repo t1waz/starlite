@@ -17,6 +17,7 @@ from typing_extensions import Type
 
 from starlite.openapi.controller import OpenAPIController
 from starlite.template import TemplateEngineProtocol
+from starlite.utils.model import ArbitraryTypesAllowedModelConfig
 
 
 class CORSConfig(BaseModel):
@@ -75,8 +76,6 @@ class StaticFilesConfig(BaseModel):
 
 
 class TemplateConfig(BaseModel):
-    class Config:
-        arbitrary_types_allowed = True
-
+    __config__ = ArbitraryTypesAllowedModelConfig
     directory: Union[DirectoryPath, List[DirectoryPath]]
     engine: Type[TemplateEngineProtocol]
