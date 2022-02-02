@@ -45,9 +45,10 @@ from .params import Body, Parameter
 from .plugins import PluginProtocol
 from .provide import Provide
 from .response import Response
-from .routing import BaseRoute, HTTPRoute, Router, WebSocketRoute
+from .routing import BaseRoute, HTTPRoute, WebSocketRoute
 from .testing import TestClient, create_test_client, create_test_request
 from .types import MiddlewareProtocol, Partial, ResponseHeader
+from .router import Router
 
 __all__ = [
     "ASGIRouteHandler",

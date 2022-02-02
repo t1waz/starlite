@@ -9,11 +9,12 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.testclient import TestClient as StarletteTestClient
 from typing_extensions import Type
 
-from starlite import Controller, Provide, Router
+from starlite.controller import Controller
+from starlite.provide import Provide
+from starlite.router import Router
 from starlite.app import Starlite
 from starlite.config import CORSConfig, OpenAPIConfig, StaticFilesConfig, TemplateConfig
 from starlite.connection import Request
-from starlite.datastructures import State
 from starlite.enums import HttpMethod, RequestEncodingType
 from starlite.handlers import BaseRouteHandler
 from starlite.plugins.base import PluginProtocol

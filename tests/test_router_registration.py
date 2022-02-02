@@ -10,8 +10,8 @@ from starlite import (
     post,
 )
 from starlite import route as route_decorator
-from starlite import websocket
-from starlite.routing import Router
+from starlite.handlers.websocket import websocket
+from starlite.router import Router
 
 
 class MyController(Controller):

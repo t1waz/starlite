@@ -27,7 +27,8 @@ from starlite.openapi.path_item import create_path_item
 from starlite.plugins.base import PluginProtocol
 from starlite.provide import Provide
 from starlite.response import Response
-from starlite.routing import ASGIRoute, BaseRoute, HTTPRoute, Router, WebSocketRoute
+from starlite.router import Router
+from starlite.routing import ASGIRoute, BaseRoute, HTTPRoute, WebSocketRoute
 from starlite.signature import model_function_signature
 from starlite.template import TemplateEngineProtocol
 from starlite.types import (
