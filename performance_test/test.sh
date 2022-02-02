@@ -25,12 +25,12 @@ for TYPE in json plaintext; do
       "async-${TYPE}-mixed-params/def?first=abc"
       "sync-${TYPE}-mixed-params/def?first=abc"
     )
-    #for i in {1..4}; do
+    for i in {1..4}; do
       for ENDPOINT in "${endpoints[@]}"; do
         name=$(echo "${TARGET}-${ENDPOINT}-${i}.json" | sed 's/^\///;s/\//-/g')
         npx -y autocannon -d 5 -c 50 -w 4 -j "http://0.0.0.0:8001/$ENDPOINT" >>"./results/$name"
       done
-    #done
+    done
     printf "\n\ntest sequence finished\n\nterminating all running python instances\n\n"
     pkill python
   done
