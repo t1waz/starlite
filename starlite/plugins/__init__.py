@@ -1,4 +1,4 @@
-from .base import PluginMapping, PluginProtocol, get_plugin_for_value
+from starlite.plugins.base import PluginMapping, PluginProtocol, get_plugin_for_value
 
 __all__ = [
     "PluginMapping",

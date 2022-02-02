@@ -37,7 +37,6 @@ def test_route_handler_validation_http_method():
     with pytest.raises(ValidationError):
         route(http_method=[HttpMethod.GET, "poft"], status_code=HTTP_200_OK)
 
-
 def test_route_handler_validation_response_class():
     # doesn't raise when subclass of starlette response is passed
     class SpecialResponse(Response):

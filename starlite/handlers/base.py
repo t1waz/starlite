@@ -23,11 +23,10 @@ from starlite.utils import normalize_path
 
 if TYPE_CHECKING:  # pragma: no cover
     from starlite.controller import Controller
-    from starlite.routing import Router
+    from starlite.router import Router
 
 
 class BaseRouteHandler:
-
 
     __slots__ = (
         "paths",

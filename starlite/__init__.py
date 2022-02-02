@@ -1,18 +1,18 @@
 from starlite.datastructures import File, Redirect, State, Stream, Template
 
-from .app import Starlite
-from .config import CORSConfig, OpenAPIConfig, StaticFilesConfig, TemplateConfig
-from .connection import Request, WebSocket
-from .controller import Controller
-from .dto import DTOFactory
-from .enums import (
+from starlite.app import Starlite
+from starlite.config import CORSConfig, OpenAPIConfig, StaticFilesConfig, TemplateConfig
+from starlite.connection import Request, WebSocket
+from starlite.controller import Controller
+from starlite.dto import DTOFactory
+from starlite.enums import (
     HttpMethod,
     MediaType,
     OpenAPIMediaType,
     RequestEncodingType,
     ScopeType,
 )
-from .exceptions import (
+from starlite.exceptions import (
     HTTPException,
     ImproperlyConfiguredException,
     InternalServerException,
@@ -24,7 +24,7 @@ from .exceptions import (
     StarLiteException,
     ValidationException,
 )
-from .handlers import (
+from starlite.handlers import (
     ASGIRouteHandler,
     BaseRouteHandler,
     HTTPRouteHandler,
@@ -38,17 +38,17 @@ from .handlers import (
     route,
     websocket,
 )
-from .logging import LoggingConfig
-from .middleware import AbstractAuthenticationMiddleware, AuthenticationResult
-from .openapi.controller import OpenAPIController
-from .params import Body, Parameter
-from .plugins import PluginProtocol
-from .provide import Provide
-from .response import Response
-from .routing import BaseRoute, HTTPRoute, WebSocketRoute
-from .testing import TestClient, create_test_client, create_test_request
-from .types import MiddlewareProtocol, Partial, ResponseHeader
-from .router import Router
+from starlite.logging import LoggingConfig
+from starlite.middleware import AbstractAuthenticationMiddleware, AuthenticationResult
+from starlite.openapi.controller import OpenAPIController
+from starlite.params import Body, Parameter
+from starlite.plugins import PluginProtocol
+from starlite.provide import Provide
+from starlite.response import Response
+from starlite.routing import BaseRoute, HTTPRoute, WebSocketRoute
+from starlite.testing import TestClient, create_test_client, create_test_request
+from starlite.types import MiddlewareProtocol, Partial, ResponseHeader
+from starlite.router import Router
 
 __all__ = [
     "ASGIRouteHandler",
