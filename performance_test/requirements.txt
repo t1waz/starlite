@@ -4,5 +4,6 @@ matplotlib==3.5.1
 orjson==3.6.6
 pandas==1.3.5
 starlette==0.17.1
-../
+../dist/starlite-1.0.1-cp310-cp310-macosx_12_0_arm64.whl
 uvicorn==0.17.0
+cython==0.29.27

@@ -27,14 +27,14 @@ class StarliteType(BaseModel):
 class File(StarliteType):
     path: FilePath
     filename: str
-    stat_result: Optional[os.stat_result] = None
-
-    @validator("stat_result", always=True)
-    def validate_status_code(  # pylint: disable=no-self-argument, no-self-use
-        cls, value: Optional[os.stat_result], values: Dict[str, Any]
-    ) -> os.stat_result:
-        """Set the stat_result value for the given filepath"""
-        return value or os.stat(cast(str, values.get("path")))
+    stat_result: Optional[Any] = None
+    #
+    # @validator("stat_result", always=True)
+    # def validate_status_code(  # pylint: disable=no-self-argument, no-self-use
+    #     cls, value: Optional[tuple], values: Dict[str, Any]
+    # ) -> Any:
+    #     """Set the stat_result value for the given filepath"""
+    #     return value or os.stat(cast(str, values.get("path")))
 
 
 class Redirect(StarliteType):

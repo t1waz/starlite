@@ -7,6 +7,8 @@
 .vscode/
 __pycache__/
 dist/
+build/
+cython_build/
 node_modules/
 results/
 
@@ -16,3 +18,5 @@ results/
 .DS_Store
 .python-version
 coverage.*
+**/*.so
+setup.py

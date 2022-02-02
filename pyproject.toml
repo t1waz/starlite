@@ -26,7 +26,8 @@ classifiers = [
     "Topic :: Software Development",
     "Typing :: Typed",
 ]
-include = ["CHANGELOG.md"]
+exclude = ["starlite/**/*.py"]
+include = ["starlite/**/*.so", "CHANGELOG.md"]
 packages = [
     { include = "starlite" },
 ]
@@ -54,9 +55,15 @@ sqlalchemy = {extras = ["mypy"], version = "*"}
 Jinja2 = "*"
 Mako = "*"
 slotscheck = "*"
+Cython = "^0.29.27"
+setuptools = "^60.7.0"
+
+[tool.poetry.build]
+script = "build.py"
+generate-setup-file = false
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=1.0.0", "cython"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.black]
