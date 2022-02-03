@@ -12,7 +12,6 @@ from typing import (
     cast,
 )
 
-from pydantic import validate_arguments
 from pydantic.typing import AnyCallable
 from starlette.requests import HTTPConnection
 
@@ -43,7 +42,6 @@ class BaseRouteHandler:
         "signature_model",
     )
 
-    @validate_arguments(config={"arbitrary_types_allowed": True})
     def __init__(
         self,
         path: Union[Optional[str], Optional[List[str]]] = None,

@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Optional, Set, Union, cast
 
 from openapi_schema_pydantic import OpenAPI, Schema
 from openapi_schema_pydantic.util import construct_open_api_with_schema_class
-from pydantic import Extra, validate_arguments
+from pydantic import Extra
 from pydantic.typing import AnyCallable
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware import Middleware
@@ -62,7 +62,6 @@ class Starlite(Router):
         # see: https://stackoverflow.com/questions/472000/usage-of-slots
     )
 
-    @validate_arguments(config={"arbitrary_types_allowed": True})
     def __init__(
         self,
         *,

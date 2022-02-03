@@ -14,7 +14,6 @@ from typing import (
     cast,
 )
 
-from pydantic import validate_arguments
 from pydantic.typing import AnyCallable
 from starlette.background import BackgroundTask, BackgroundTasks
 from starlette.responses import FileResponse, RedirectResponse
@@ -75,7 +74,6 @@ class HTTPRouteHandler(BaseRouteHandler):
         "template_name",
     )
 
-    @validate_arguments(config={"arbitrary_types_allowed": True})
     def __init__(
         self,
         path: Union[Optional[str], Optional[List[str]]] = None,
@@ -318,7 +316,6 @@ route = HTTPRouteHandler
 
 
 class get(HTTPRouteHandler):
-    @validate_arguments(config={"arbitrary_types_allowed": True})
     def __init__(
         self,
         path: Union[Optional[str], Optional[List[str]]] = None,
@@ -368,7 +365,6 @@ class get(HTTPRouteHandler):
 
 
 class post(HTTPRouteHandler):
-    @validate_arguments(config={"arbitrary_types_allowed": True})
     def __init__(
         self,
         path: Union[Optional[str], Optional[List[str]]] = None,
@@ -418,7 +414,6 @@ class post(HTTPRouteHandler):
 
 
 class put(HTTPRouteHandler):
-    @validate_arguments(config={"arbitrary_types_allowed": True})
     def __init__(
         self,
         path: Union[Optional[str], Optional[List[str]]] = None,
@@ -468,7 +463,6 @@ class put(HTTPRouteHandler):
 
 
 class patch(HTTPRouteHandler):
-    @validate_arguments(config={"arbitrary_types_allowed": True})
     def __init__(
         self,
         path: Union[Optional[str], Optional[List[str]]] = None,
@@ -518,7 +512,6 @@ class patch(HTTPRouteHandler):
 
 
 class delete(HTTPRouteHandler):
-    @validate_arguments(config={"arbitrary_types_allowed": True})
     def __init__(
         self,
         path: Union[Optional[str], Optional[List[str]]] = None,

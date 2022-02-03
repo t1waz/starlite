@@ -26,8 +26,20 @@ classifiers = [
     "Topic :: Software Development",
     "Typing :: Typed",
 ]
-exclude = ["starlite/**/*.py"]
-include = ["starlite/**/*.so", "CHANGELOG.md"]
+exclude = [
+    "starlite/app.py",
+    "starlite/asgi.py",
+    "starlite/controller.py",
+    "starlite/kwargs.py",
+    "starlite/response.py",
+    "starlite/routing.py",
+    "starlite/handlers/*.py"
+]
+include = [
+    "CHANGELOG.md",
+    "starlite/**/*.so",
+    "starlist/**/*.py",
+]
 packages = [
     { include = "starlite" },
 ]
@@ -51,12 +63,12 @@ pytest = "*"
 pytest-asyncio = "*"
 pytest-cov = "*"
 uvicorn = "*"
-sqlalchemy = {extras = ["mypy"], version = "*"}
+sqlalchemy = { extras = ["mypy"], version = "*" }
 Jinja2 = "*"
 Mako = "*"
 slotscheck = "*"
-Cython = "^0.29.27"
-setuptools = "^60.7.0"
+Cython = "*"
+setuptools = "*"
 
 [tool.poetry.build]
 script = "build.py"

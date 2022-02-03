@@ -5,4 +5,5 @@
 [ -d "./cython_build" ] && rm -rf "./cython_build"
 [ -f "./setup.py" ] && rm "./setup.py"
 poetry build --format wheel
-find . -name "*.so" -type f -delete
+find . -name "*.so" -type f -delete || true
+find . -name "*.c" -type f -delete || true

@@ -1,5 +1,6 @@
+from dataclasses import dataclass
 from inspect import isawaitable
-from typing import Any, Dict, List, NamedTuple, Optional, Set, Tuple, Union, cast
+from typing import Any, Dict, List, Optional, Set, Tuple, Union, cast
 
 from pydantic.fields import ModelField, Undefined
 from typing_extensions import Type
@@ -14,11 +15,16 @@ from starlite.signature import SignatureModel, get_signature_model
 from starlite.types import ReservedKwargs
 
 
-class ParameterDefinition(NamedTuple):
+@dataclass(unsafe_hash=True, init=True)
+class ParameterDefinition:
     field_name: str
     field_alias: str
     is_required: bool
     default_value: Any
+
+    def __iter__(self):
+        """Allow unpacking this class as if it was a tuple"""
+        yield from [self.field_name, self.field_alias, self.is_required, self.default_value]
 
 
 class Dependency:

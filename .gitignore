@@ -13,10 +13,11 @@ node_modules/
 results/
 
 # files
+**/*.c
+**/*.so
 *.iml
-.coverage
 .DS_Store
+.coverage
 .python-version
 coverage.*
-**/*.so
 setup.py
