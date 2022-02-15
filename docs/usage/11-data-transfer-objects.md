@@ -13,8 +13,12 @@ pydantic model.
 <!-- prettier-ignore -->
 !!! important
     Although the value generated is a pydantic factory, because it is being generated programmatically, it's
-    currently impossible to extend editor auto-complete for the DTO properties - it will be typed as `DTO[T]`,
-    with T being a generic argument representing the original model used to create the DTO.
+    currently impossible to extend editor auto-complete for the DTO properties - it will be typed as `Type[DTO[T]]`,
+    with T being a generic argument representing the original model used to create the DTO class.
+
+<!-- prettier-ignore -->
+!!! note
+    Mypy does not support using `Type[]` based types as arguments in functions.
 
 The `DTOFactory` class supports [plugins](10-plugins.md), for example, this is how it could be used with an SQL Alchemy
 declarative class:

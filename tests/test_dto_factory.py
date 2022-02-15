@@ -78,13 +78,13 @@ def test_dto_factory_validation() -> None:
 def test_dto_integration(model: Any, exclude: list, field_mapping: dict, plugins: list) -> None:
     MyDTO = DTOFactory(plugins=plugins)("MyDTO", model, exclude=exclude, field_mapping=field_mapping)
 
-    class DTOModelFactory(ModelFactory[MyDTO]):  # type: ignore
+    class DTOModelFactory(ModelFactory[MyDTO]):
         __model__ = MyDTO
 
-    dto_instance = DTOModelFactory.build().dict()  # type: ignore
+    dto_instance = DTOModelFactory.build().dict()
 
     @post(path="/")
-    def post_handler(data: MyDTO) -> None:  # type: ignore
+    def post_handler(data: MyDTO) -> None:
         assert isinstance(data, MyDTO)
         assert data == dto_instance
 
